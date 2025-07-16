@@ -2,16 +2,49 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>リアルタイム適時開示モニター（修正版）</title>
+  <title>適時開示モニター</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="refresh" content="60">
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    h1 { color: #333; }
-    .entry { margin-bottom: 20px; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      font-size: 1.6em;
+      color: #1a73e8;
+      text-align: center;
+    }
+    .entry {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .entry strong {
+      font-size: 1.1em;
+      display: block;
+      margin-bottom: 8px;
+      color: #000;
+    }
+    .entry a {
+      color: #1a73e8;
+      word-break: break-word;
+    }
+    .entry small {
+      display: block;
+      margin-top: 5px;
+      color: #666;
+      font-size: 0.85em;
+    }
   </style>
 </head>
 <body>
-  <h1>📢 適時開示モニター（自動更新・修正版）</h1>
+  <h1>📢 適時開示モニター（自動更新）</h1>
   <div id="news">読み込み中...</div>
 
   <script>
@@ -34,9 +67,9 @@
           const div = document.createElement("div");
           div.className = "entry";
           div.innerHTML = `
-            <strong>${title}</strong><br>
-            <a href="${link}" target="_blank">${link}</a><br>
-            <small>${pubDate}</small>
+            <strong>${title}</strong>
+            <a href="${link}" target="_blank">${link}</a>
+            <small>📅 ${pubDate}</small>
           `;
           container.appendChild(div);
         });
@@ -47,7 +80,7 @@
     }
 
     fetchRSS();
-    setInterval(fetchRSS, 60000); // 60秒ごとに更新
+    setInterval(fetchRSS, 60000);
   </script>
 </body>
 </html>
