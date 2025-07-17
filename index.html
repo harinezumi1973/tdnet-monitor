@@ -1,42 +1,65 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TDnet Monitor</title>
+  <meta charset="UTF-8">
+  <title>TDnetモニター</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: sans-serif; background: #f4f4f4; padding: 1em; }
-    h1 { font-size: 1.5em; color: #333; }
-    ul { list-style: none; padding: 0; }
-    li {
-      background: white;
-      margin: 0.5em 0;
-      padding: 0.8em;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    body {
+      font-family: sans-serif;
+      padding: 1em;
+      background: #f7f7f7;
+      color: #333;
     }
-    .time { font-size: 0.8em; color: #777; }
-    a { color: #007acc; text-decoration: none; }
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+    }
+    ul {
+      padding: 0;
+    }
+    li {
+      list-style: none;
+      background: #fff;
+      margin-bottom: 1em;
+      padding: 1em;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .time {
+      font-size: 0.9em;
+      color: gray;
+      margin-bottom: 0.3em;
+    }
+    a {
+      text-decoration: none;
+      color: #0077cc;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h1>TDnet 適時開示速報</h1>
-  <ul id="list"><li>読み込み中…</li></ul>
+  <h1>📢 TDnet 適時開示モニター</h1>
+  <ul id="feed"></ul>
 
   <script>
-    function showFeed(data) {
-      const ul = document.getElementById("list");
-      ul.innerHTML = "";
+    function callback(data) {
+      const ul = document.getElementById("feed");
+      ul.innerHTML = ''; // 前回の内容をクリア
       data.items.forEach(item => {
         const li = document.createElement("li");
-        li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a><br><span class="time">${new Date(item.pubDate).toLocaleString()}</span>`;
+        li.innerHTML = `
+          <div class="time">${item.pubDate}</div>
+          <a href="${item.link}" target="_blank">${item.title}</a>
+        `;
         ul.appendChild(li);
       });
     }
-
-    const script = document.createElement("script");
-    script.src = "【https://script.google.com/macros/s/AKfycbxhNF8i-m-HVSclHvm1Hhr4i9M9PbGRFdrvtTl5DptyCwZ4ZbloREHPFIwV5F-jBpzcWA/exec】?url=https://www.release.tdnet.info/rss/jp/tdnet_rdf.xml&callback=showFeed";
-    document.head.appendChild(script);
   </script>
+
+  <!-- JSONP方式でGASのRSS→JSON変換を呼び出す -->
+  <script src="https://script.google.com/macros/s/AKfycbxhNF8i-m-HVSclHvm1Hhr4i9M9PbGRFdrvtTl5DptyCwZ4ZbloREHPFIwV5F-jBpzcWA/exec?url=https://www.release.tdnet.info/rss/jp/rss.xml&callback=callback"></script>
 </body>
 </html>
