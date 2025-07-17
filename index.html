@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TDnet Monitor</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f8f8f8;
+      padding: 1em;
+    }
+    h1 {
+      font-size: 1.5em;
+      color: #333;
+    }
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+    li {
+      background: white;
+      margin: 0.5em 0;
+      padding: 0.8em;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    a {
+      color: #007acc;
+      text-decoration: none;
+    }
+    .time {
+      font-size: 0.8em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>TDnet 適時開示速報</h1>
+  <ul id="list"></ul>
+
+  <script>
+    const feedUrl = "https://script.google.com/macros/s/AKfycbwQ4MS9FcUTHcrBofluzX98le36cXGvOhUwWNfjiiNCrBcSs5KbymFzSihADaO8ZQkrhg/exec?url=https://www.release.tdnet.info/rss/jp/tdnet_rdf.xml";
+
+    async function fetchFeed() {
+      try {
+        const res = await fetch(feedUrl);
+        const data = await res.json();
+        const list = document.getElementById("list");
+        list.innerHTML = "";
+        data.items.forEach(item => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <a href="${item.link}" target="_blank">${item.title}</a><br/>
+            <span class="time">${new Date(item.pubDate).toLocaleString()}</span>
+          `;
+          list.appendChild(li);
+        });
+      } catch (e) {
+        document.getElementById("list").innerHTML = "<li>データ取得に失敗しました😢</li>";
+      }
+    }
+
+    fetchFeed();
+    setInterval(fetchFeed, 60000); // 1分ごとに更新
+  </script>
+</body>
+</html>
