@@ -1,86 +1,35 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>適時開示モニター</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="60">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
-      padding: 20px;
-      color: #333;
-    }
-    h1 {
-      font-size: 1.6em;
-      color: #1a73e8;
-      text-align: center;
-    }
-    .entry {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 15px 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    .entry strong {
-      font-size: 1.1em;
-      display: block;
-      margin-bottom: 8px;
-      color: #000;
-    }
-    .entry a {
-      color: #1a73e8;
-      word-break: break-word;
-    }
-    .entry small {
-      display: block;
-      margin-top: 5px;
-      color: #666;
-      font-size: 0.85em;
-    }
-  </style>
-</head>
-<body>
-  <h1>📢 適時開示モニター（自動更新）</h1>
-  <div id="news">読み込み中...</div>
+<script>
+  async function fetchRSS() {
+    const rssUrl = "https://rss.asahi.com/rss/asahi/newsheadlines.rdf";
+    const proxyUrl = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(rssUrl);
 
-  <script>
-    async function fetchRSS() {
-      const rssUrl = "https://www.release.tdnet.info/rss/tdnet.xml";
-      const proxyUrl = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(rssUrl);
+    try {
+      const response = await fetch(proxyUrl);
+      const data = await response.json();
+      const items = data.items;
+      const container = document.getElementById("news");
+      container.innerHTML = "";
 
-      try {
-        const response = await fetch(proxyUrl);
-        const data = await response.json();
-        const items = data.items;
-        const container = document.getElementById("news");
-        container.innerHTML = "";
+      items.slice(0, 10).forEach(item => {
+        const title = item.title;
+        const link = item.link;
+        const pubDate = new Date(item.pubDate).toLocaleString();
 
-        items.slice(0, 10).forEach(item => {
-          const title = item.title;
-          const link = item.link;
-          const pubDate = new Date(item.pubDate).toLocaleString();
-
-          const div = document.createElement("div");
-          div.className = "entry";
-          div.innerHTML = `
-            <strong>${title}</strong>
-            <a href="${link}" target="_blank">${link}</a>
-            <small>📅 ${pubDate}</small>
-          `;
-          container.appendChild(div);
-        });
-      } catch (error) {
-        document.getElementById("news").innerText = "読み込みに失敗しました😢";
-        console.error(error);
-      }
+        const div = document.createElement("div");
+        div.className = "entry";
+        div.innerHTML = `
+          <strong>${title}</strong>
+          <a href="${link}" target="_blank">${link}</a>
+          <small>📅 ${pubDate}</small>
+        `;
+        container.appendChild(div);
+      });
+    } catch (error) {
+      document.getElementById("news").innerText = "読み込みに失敗しました😢";
+      console.error(error);
     }
+  }
 
-    fetchRSS();
-    setInterval(fetchRSS, 60000);
-  </script>
-</body>
-</html>
+  fetchRSS();
+  setInterval(fetchRSS, 60000);
+</script>
