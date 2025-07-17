@@ -45,9 +45,15 @@
   <ul id="feed"></ul>
 
   <script>
+    function fetchData() {
+      const script = document.createElement('script');
+      script.src = 'https://script.google.com/macros/s/AKfycbxhNF8i-m-HVSclHvm1Hhr4i9M9PbGRFdrvtTl5DptyCwZ4ZbloREHPFIwV5F-jBpzcWA/exec?url=https://www.release.tdnet.info/rss/jp/rss.xml&callback=callback&_ts=' + new Date().getTime();
+      document.body.appendChild(script);
+    }
+
     function callback(data) {
       const ul = document.getElementById("feed");
-      ul.innerHTML = ''; // 前回の内容をクリア
+      ul.innerHTML = '';
       data.items.forEach(item => {
         const li = document.createElement("li");
         li.innerHTML = `
@@ -57,9 +63,12 @@
         ul.appendChild(li);
       });
     }
-  </script>
 
-  <!-- JSONP方式でGASのRSS→JSON変換を呼び出す -->
-  <script src="https://script.google.com/macros/s/AKfycbxhNF8i-m-HVSclHvm1Hhr4i9M9PbGRFdrvtTl5DptyCwZ4ZbloREHPFIwV5F-jBpzcWA/exec?url=https://www.release.tdnet.info/rss/jp/rss.xml&callback=callback"></script>
+    // 最初の読み込み
+    fetchData();
+
+    // 60秒ごとに更新
+    setInterval(fetchData, 60 * 1000);
+  </script>
 </body>
 </html>
